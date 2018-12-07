@@ -1,0 +1,58 @@
+<%#
+kind: snippet
+name: or_sles_client
+model: ProvisioningTemplate
+snippet: true
+description: this snippet will start a script to register SUSE machines with orcharhino
+%>
+<%
+  os_major = @host.operatingsystem.major.to_i
+  os_minor = @host.operatingsystem.minor.to_i
+  pm_set = @host.puppetmaster.empty? ? false : true
+  aio_enabled = host_param_true?('enable-puppetlabs-puppet5-repo') || host_param_true?('enable-puppetlabs-pc1-repo') || host_param_true?('enable-puppet4') || host_param_true?('enable-puppet5')
+  puppet_enabled = pm_set || host_param_true?('force-puppet')
+  salt_enabled = host_param('salt_master') ? true : false
+  sles_minor_string = (os_minor == 0) ? '' : "SP#{os_minor}"
+
+  additional_pkgs=""
+  if os_major < 12
+    additional_pkgs="libnl3"
+  end
+%>
+
+<%- if host_param('kt_activation_keys') -%>
+  <%- if @host.operatingsystem.family == 'Suse' -%>
+    echo "Installing or_sles_client repository"
+    <%- if host_param('or_sles_client_repo_prefix').nil? -%>
+      echo "================================ Warning ============================================="
+      echo "Warning: To provision SLES clients, you need to prepare an 'or_sles_client'-repository"
+      echo "  and write it's location in the global parameter 'or_sles_client_repo_prefix'."
+      echo "================================ Warning ============================================="
+    <%- end -%>
+    zypper addrepo -G --check "<%= host_param('or_sles_client_repo_prefix') %><%= os_major %><%= sles_minor_string %>" or_sles_client
+    zypper -n update
+    zypper --non-interactive --no-gpg-checks --quiet install --auto-agree-with-licenses subscription-manager <%= additional_pkgs %>
+    zypper --non-interactive --no-gpg-checks --quiet install --auto-agree-with-licenses or-sles-client
+    rpm -ivh <%= subscription_manager_configuration_url(@host) %>
+    echo "Registering the System"
+    subscription-manager register --org="<%= @host.rhsm_organization_label %>" --name="<%= @host.name %>" --activationkey="<%= host_param('kt_activation_keys') %>"
+    zypper -n update
+    echo "Installing Katello Agent"
+    zypper --non-interactive --no-gpg-checks --quiet install --auto-agree-with-licenses katello-agent
+    chkconfig goferd on
+    subscription-manager refresh
+
+    <% if puppet_enabled -%>
+      <% if aio_enabled -%>
+        /usr/bin/zypper -n install puppet-agent
+      <% else -%>
+        /usr/bin/zypper -n install rubygem-puppet
+      <% end -%>
+    <% end -%>
+    <% if salt_enabled -%>
+      /usr/bin/zypper -n install salt-minion
+    <% end -%>
+  <%- else -%>
+    echo "Warning! This should only be used on Suse OSes."
+  <%- end -%>
+<%- end -%>

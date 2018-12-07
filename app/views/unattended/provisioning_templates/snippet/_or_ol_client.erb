@@ -1,0 +1,25 @@
+<%#
+kind: snippet
+name: or_ol_client
+model: ProvisioningTemplate
+snippet: true
+description: This snippet prepares the registration to orcharhino on a OracleLinux host
+-%>
+<%-
+  os_major = @host.operatingsystem.major.to_i
+%>
+<%- if !host_param('or_oraclelinux_client_repo_prefix').nil? %>
+# Install dependencies which are required later on while installing the subscription-manager
+yum install -y python-inotify python-setuptools
+
+cat << EOF > /etc/yum.repos.d/or_ol_client.repo
+[orcharhino_OracleLinux_Client_<%= os_major %>]
+name=orcharhino Oracle Linux Client
+baseurl="<%= host_param('or_oraclelinux_client_repo_prefix') %><%= os_major %>"
+gpgcheck=0
+enabled=1
+EOF
+
+# Remove oracle's rhn-client-tools which blocks the installation of our subscription-manager
+yum remove -y rhn-client-tools
+<%- end %>

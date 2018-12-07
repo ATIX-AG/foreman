@@ -15,6 +15,8 @@ snippet: true
 #   redhat_install_host_tools = [true|false]    Install the katello-host-tools yum/dnf plugins.
 #
 #   redhat_install_host_tracer_tools = [true|false]  Install the katello-host-tools Tracer yum/dnf plugin.
+#                                               which are not managed with subscription-manager.
+#   install_disable_repo_plugin = [true|false]  Install the yum plugin to disable the all repos
 #
 #   activation_key = <key>                      Activation key string, not needed if using
 #                                               subscription-manager with username/password
@@ -89,6 +91,7 @@ snippet: true
       redhat_install_agent = true
       redhat_install_host_tools = true
       redhat_install_host_tracer_tools = false
+      install_disable_repo_plugin = true
     else
       subscription_manager_certpkg_url = host_param('subscription_manager_certpkg_url')
       subscription_manager_atomic_url = host_param('subscription_manager_atomic_url')
@@ -97,8 +100,13 @@ snippet: true
       redhat_install_agent = host_param_true?('redhat_install_agent')
       redhat_install_host_tools = host_param_true?('redhat_install_host_tools')
       redhat_install_host_tracer_tools = host_param_true?('redhat_install_host_tracer_tools')
+      install_disable_repo_plugin = host_param_true?('install_disable_repo_plugin')
     end
   %>
+
+  <% if @host.operatingsystem.name == 'OracleLinux' -%>
+  <%= snippet 'or_ol_client' -%>
+  <% end -%>
 
   echo "##############################################################"
   echo "################# SUBSCRIPTION MANAGER #######################"
@@ -206,6 +214,14 @@ snippet: true
     <% if redhat_install_host_tracer_tools %>
       $PACKAGE_MAN install katello-host-tools-tracer
     <% end %>
+  <% end %>
+
+  <% if install_disable_repo_plugin %>
+    if [ -f /usr/bin/dnf ]; then
+      dnf -y install yum-disable-repos-plugin
+    else
+      yum -t -y install yum-disable-repos-plugin
+    fi
   <% end %>
 <% end %>
 
