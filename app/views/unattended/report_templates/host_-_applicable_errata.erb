@@ -33,7 +33,7 @@ require:
           'Published': erratum.issued,
           'Applicable since': erratum.created_at,
           'Severity': erratum.severity,
-          'Packages': erratum.package_names,
+          'Packages': erratum.all_package_names,
           'CVEs': erratum.cves.map { |c| c.cve_id },
           'Reboot suggested': erratum.reboot_suggested,
         ) -%>
