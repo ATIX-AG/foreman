@@ -286,6 +286,13 @@ export no_proxy="<%= host_param('http-proxy') %> <%= host_param('noproxy') %>"
         <product_dir>/Module-Basesystem</product_dir>
         <product>sle-module-basesystem</product>
       </listentry>
+  <% if os_minor >= 1 -%>
+      <listentry>
+        <media_url><%= host_param('sle-module-basesystem-url') %></media_url>
+        <product_dir>/Module-Python2</product_dir>
+        <product>sle-module-python2</product>
+      </listentry>
+  <% end -%>
 <% end -%>
     </add_on_products>
   </add-on>
