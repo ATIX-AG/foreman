@@ -23,13 +23,17 @@ description: this snippet will start a script to register SUSE machines with orc
 <%- if host_param('kt_activation_keys') -%>
   <%- if @host.operatingsystem.family == 'Suse' -%>
     echo "Installing or_sles_client repository"
-    <%- if host_param('or_sles_client_repo_prefix').nil? -%>
+    <%- if host_param('or_sles_client_repo_prefix').nil? and host_param('or_client_repo_url').nil? -%>
       echo "================================ Warning ============================================="
       echo "Warning: To provision SLES clients, you need to prepare an 'or_sles_client'-repository"
-      echo "  and write it's location in the global parameter 'or_sles_client_repo_prefix'."
+      echo "  and write it's location in the operatingsystem parameter 'or_client_repo_url'."
       echo "================================ Warning ============================================="
     <%- end -%>
-    zypper addrepo -G --check "<%= host_param('or_sles_client_repo_prefix') %><%= os_major %><%= sles_minor_string %>" or_sles_client
+    <%- if host_param('or_client_repo_url').nil? -%>
+      zypper addrepo -G --check "<%= host_param('or_sles_client_repo_prefix') %><%= os_major %><%= sles_minor_string %>" or_sles_client
+    <%- else -%>
+      zypper addrepo -G --check "<%= host_param('or_client_repo_url') %>" or_sles_client
+    <%- end -%>
     zypper -n update
     zypper --non-interactive --no-gpg-checks --quiet install --auto-agree-with-licenses subscription-manager <%= additional_pkgs %>
     zypper --non-interactive --no-gpg-checks --quiet install --auto-agree-with-licenses or-sles-client

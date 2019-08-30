@@ -7,15 +7,22 @@ description: This snippet prepares the registration to orcharhino on a OracleLin
 -%>
 <%-
   os_major = @host.operatingsystem.major.to_i
+  if !host_param('or_client_repo_url').nil?
+    or_client_repo_url = host_param('or_client_repo_url')
+  elsif !host_param('or_oraclelinux_client_repo_prefix').nil?
+    or_client_repo_url = host_param('or_oraclelinux_client_repo_prefix') + os_major
+  else
+    or_client_repo_url = nil
+  end
 %>
-<%- if !host_param('or_oraclelinux_client_repo_prefix').nil? %>
+<%- if !or_client_repo_url.nil? %>
 # Install dependencies which are required later on while installing the subscription-manager
 yum install -y python-inotify python-setuptools
 
 cat << EOF > /etc/yum.repos.d/or_ol_client.repo
 [orcharhino_OracleLinux_Client_<%= os_major %>]
 name=orcharhino Oracle Linux Client
-baseurl="<%= host_param('or_oraclelinux_client_repo_prefix') %><%= os_major %>"
+baseurl="<%= or_client_repo_url %>"
 gpgcheck=0
 enabled=1
 EOF

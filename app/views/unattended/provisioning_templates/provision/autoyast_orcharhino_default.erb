@@ -26,6 +26,14 @@ oses:
     </mode>
   </general>
   <networking>
+<% if host_param('http-proxy') -%>
+    <proxy>
+      <enabled config:type="boolean">true</enabled>
+      <http_proxy>http://<%= host_param('http-proxy') %>:<%= host_param('http-proxy-port') %></http_proxy>
+      <https_proxy>http://<%= host_param('http-proxy') %>:<%= host_param('http-proxy-port') %></https_proxy>
+      <no_proxy>localhost 127.0.0.1 <%= host_param('http-proxy') %> <%= host_param('noproxy') %></no_proxy>
+    </proxy>
+<% end -%>
     <dns>
       <hostname><%= @host.name %></hostname>
 <% unless primary_interface_subnet.dhcp_boot_mode? -%>
@@ -151,6 +159,35 @@ oses:
       <package>openssh</package>
     </packages>
   </software>
+<% if host_param('http-proxy') -%>
+  <sysconfig config:type="list" >
+    <sysconfig_entry>
+      <sysconfig_key>PROXY_ENABLED</sysconfig_key>
+      <sysconfig_path>/etc/sysconfig/proxy</sysconfig_path>
+      <sysconfig_value>on</sysconfig_value>
+    </sysconfig_entry>
+    <sysconfig_entry>
+      <sysconfig_key>HTTPS_PROXY</sysconfig_key>
+      <sysconfig_path>/etc/sysconfig/proxy</sysconfig_path>
+      <sysconfig_value>http://<%= host_param('http-proxy') %>:<%= host_param('http-proxy-port') %></sysconfig_value>
+    </sysconfig_entry>
+    <sysconfig_entry>
+      <sysconfig_key>HTTP_PROXY</sysconfig_key>
+      <sysconfig_path>/etc/sysconfig/proxy</sysconfig_path>
+      <sysconfig_value>http://<%= host_param('http-proxy') %>:<%= host_param('http-proxy-port') %></sysconfig_value>
+    </sysconfig_entry>
+    <sysconfig_entry>
+      <sysconfig_key>GOPHER_PROXY</sysconfig_key>
+      <sysconfig_path>/etc/sysconfig/proxy</sysconfig_path>
+      <sysconfig_value>http://<%= host_param('http-proxy') %>:3128</sysconfig_value>
+    </sysconfig_entry>
+    <sysconfig_entry>
+      <sysconfig_key>NO_PROXY</sysconfig_key>
+      <sysconfig_path>/etc/sysconfig/proxy</sysconfig_path>
+      <sysconfig_value>localhost, 127.0.0.1, <%= host_param('http-proxy') %>, <%= host_param('noproxy').split(' ').join(', ') %></sysconfig_value>
+    </sysconfig_entry>
+  </sysconfig>
+<% end -%>
   <users config:type="list">
     <user>
       <username>root</username>
@@ -210,6 +247,12 @@ rm /etc/resolv.conf
         <interpreter>shell</interpreter>
         <notification>Setting up Katello / Puppet ...</notification>
         <source><![CDATA[
+
+<% if host_param('http-proxy') -%>
+export http_proxy="http://<%= host_param('http-proxy') %>:<%= host_param('http-proxy-port') %>"
+export no_proxy="<%= host_param('http-proxy') %> <%= host_param('noproxy') %>"
+<% end -%>
+
 <%= snippet 'or_sles_client' %>
 
 <%= snippet('remote_execution_ssh_keys') %>
