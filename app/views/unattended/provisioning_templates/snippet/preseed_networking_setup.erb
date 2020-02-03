@@ -47,7 +47,7 @@ EOF
 real=`ip -o link | awk '/<%= interface.mac -%>/ {print $2;}' | sed s/:$//`
 <% virtual = interface.virtual? -%>
 <% if virtual -%>
-real=`echo <%= interface.identifier -%> | sed s/<%= interface.attached_to -%>/$real/`
+real="<%= interface.attached_to -%>"
 <% end -%>
 
 cat << EOF >> /etc/network/interfaces
