@@ -6,6 +6,12 @@ oses:
 - Debian
 - Ubuntu
 %>
+
+<% if @host.provision_method == 'image' -%>
+<%# Cloud instances frequently have incorrect hosts data %>
+<%= snippet 'fix_hosts' %>
+<% end -%>
+
 <%
   # safemode renderer does not support unary negation
   pm_set = @host.puppetmaster.empty? ? false : true
