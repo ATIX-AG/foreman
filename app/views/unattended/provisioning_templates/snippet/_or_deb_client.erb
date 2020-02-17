@@ -71,6 +71,9 @@ end
 EOF
 
   <%- end -%>
+# Update the package lists and upgrade all packages
+apt-get -y update
+apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" -y upgrade
 <%- else -%>
 echo "Warning! This should only be used on Debian OSes."
 <%- end -%>
