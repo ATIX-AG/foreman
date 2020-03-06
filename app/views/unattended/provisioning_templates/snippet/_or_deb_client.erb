@@ -41,7 +41,7 @@ deb <%= or_client_repo_url %> stable main
 EOF
 
 apt-get update
-apt-get -y install apt-transport-katello katello-upload-profile python-subscription-manager
+apt-get -y install apt-transport-katello katello-upload-profile
 
 echo "Remove all repositories from /etc/apt/sources.list{,.d/*}"
 cat > /etc/apt/sources.list <<'EOF'
