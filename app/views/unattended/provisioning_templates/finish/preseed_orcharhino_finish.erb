@@ -35,6 +35,7 @@ oses:
 /bin/hostname  <%= @host.shortname %>.<%= @host.domain %>
 <% end -%>
 
+<%= snippet_if_exists(template_name + " custom snippet") %>
 <% if host_enc['parameters']['realm'] && @host.realm && @host.realm.realm_type == 'FreeIPA' -%>
 <%= snippet 'freeipa_register' %>
 <% end -%>
@@ -51,7 +52,7 @@ oses:
 
 <% if puppet_enabled %>
 <% if @host.operatingsystem.name != "Ubuntu" %>
-<% if host_param_true?('enable-puppetlabs-pc1-repo') || host_param_true?('enable-puppetlabs-repo') || host_param_true?('enable-puppetlabs-puppet5-repo') -%>
+<% if host_param_true?('enable-puppetlabs-repo') || host_param_true?('enable-puppetlabs-puppet6-repo') || host_param_true?('enable-puppetlabs-puppet5-repo') -%>
 <%= snippet 'puppetlabs_repo' %>
 <% end -%>
 <% end -%>
@@ -63,6 +64,7 @@ oses:
 <% end -%>
 
 <%= snippet 'preseed_networking_setup' %>
+<%= snippet 'efibootmgr_netboot' %>
 
 apt-get -y install ssh
 sed -i -e "/PermitRootLogin/d" /etc/ssh/sshd_config
