@@ -11,11 +11,20 @@ description: this snippet will start a script to register SUSE machines with orc
   pm_set = @host.puppetmaster.empty? ? false : true
   aio_enabled = host_param_true?('enable-puppetlabs-puppet5-repo') || host_param_true?('enable-puppetlabs-pc1-repo') || host_param_true?('enable-puppet4') || host_param_true?('enable-puppet5')
   puppet_enabled = pm_set || host_param_true?('force-puppet')
+  use_sles_client_v2 = host_param_true?('use-sles-client-v2')
   salt_enabled = host_param('salt_master') ? true : false
   sles_minor_string = (os_minor == 0) ? '' : "SP#{os_minor}"
 
+  if use_sles_client_v2
+      katello_client_tool = "katello-host-tools"
+  else
+      katello_client_tool = "katello-agent"
+  end
+
   additional_pkgs=""
-  if os_major < 12
+  if os_major >= 15
+    additional_pkgs="python2-zypp-plugin"
+  elsif os_major < 12
     additional_pkgs="libnl3"
   end
 %>
@@ -36,14 +45,19 @@ description: this snippet will start a script to register SUSE machines with orc
     <%- end -%>
     zypper -n update
     zypper --non-interactive --no-gpg-checks --quiet install --auto-agree-with-licenses subscription-manager <%= additional_pkgs %>
+    <%- unless use_sles_client_v2 -%>
     zypper --non-interactive --no-gpg-checks --quiet install --auto-agree-with-licenses or-sles-client
+    <%- end -%>
     rpm -ivh <%= subscription_manager_configuration_url(@host) %>
     echo "Registering the System"
     subscription-manager register --org="<%= @host.rhsm_organization_label %>" --name="<%= @host.name %>" --activationkey="<%= host_param('kt_activation_keys') %>"
     zypper -n update
-    echo "Installing Katello Agent"
-    zypper --non-interactive --no-gpg-checks --quiet install --auto-agree-with-licenses katello-agent
+    echo "Installing katello client"
+    zypper --non-interactive --no-gpg-checks --quiet install --auto-agree-with-licenses <%= katello_client_tool %>
+
+    <%- unless use_sles_client_v2 -%>
     chkconfig goferd on
+    <%- end -%>
     subscription-manager refresh
 
     <% if puppet_enabled -%>
