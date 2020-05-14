@@ -31,7 +31,11 @@ oses:
       <enabled config:type="boolean">true</enabled>
       <http_proxy>http://<%= host_param('http-proxy') %>:<%= host_param('http-proxy-port') %></http_proxy>
       <https_proxy>http://<%= host_param('http-proxy') %>:<%= host_param('http-proxy-port') %></https_proxy>
+      <% if host_param('noproxy') -%>     
       <no_proxy>localhost 127.0.0.1 <%= host_param('http-proxy') %> <%= host_param('noproxy') %></no_proxy>
+      <% else -%>
+      <no_proxy>localhost 127.0.0.1 </no_proxy>
+      <% end -%>
     </proxy>
 <% end -%>
     <dns>
@@ -164,7 +168,7 @@ oses:
     <sysconfig_entry>
       <sysconfig_key>PROXY_ENABLED</sysconfig_key>
       <sysconfig_path>/etc/sysconfig/proxy</sysconfig_path>
-      <sysconfig_value>on</sysconfig_value>
+      <sysconfig_value>yes</sysconfig_value>
     </sysconfig_entry>
     <sysconfig_entry>
       <sysconfig_key>HTTPS_PROXY</sysconfig_key>
@@ -184,7 +188,11 @@ oses:
     <sysconfig_entry>
       <sysconfig_key>NO_PROXY</sysconfig_key>
       <sysconfig_path>/etc/sysconfig/proxy</sysconfig_path>
+    <% if host_param('noproxy') -%>
       <sysconfig_value>localhost, 127.0.0.1, <%= host_param('http-proxy') %>, <%= host_param('noproxy').split(' ').join(', ') %></sysconfig_value>
+    <% else -%>
+      <sysconfig_value>localhost, 127.0.0.1 </sysconfig_value>
+    <% end -%>
     </sysconfig_entry>
   </sysconfig>
 <% end -%>
@@ -250,7 +258,9 @@ rm /etc/resolv.conf
 
 <% if host_param('http-proxy') -%>
 export http_proxy="http://<%= host_param('http-proxy') %>:<%= host_param('http-proxy-port') %>"
+<% if host_param('noproxy') -%>
 export no_proxy="<%= host_param('http-proxy') %> <%= host_param('noproxy') %>"
+<% end -%>
 <% end -%>
 
 <%= snippet 'or_sles_client' %>
