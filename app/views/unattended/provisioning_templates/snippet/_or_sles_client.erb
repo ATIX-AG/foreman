@@ -9,7 +9,7 @@ description: this snippet will start a script to register SUSE machines with orc
   os_major = @host.operatingsystem.major.to_i
   os_minor = @host.operatingsystem.minor.to_i
   pm_set = @host.puppetmaster.empty? ? false : true
-  aio_enabled = host_param_true?('enable-puppetlabs-puppet5-repo') || host_param_true?('enable-puppetlabs-pc1-repo') || host_param_true?('enable-puppet4') || host_param_true?('enable-puppet5')
+  aio_enabled = host_param_true?('enable-puppetlabs-puppet5-repo') || host_param_true?('enable-puppetlabs-puppet6-repo') || host_param_true?('enable-puppetlabs-pc1-repo') || host_param_true?('enable-puppet4') || host_param_true?('enable-puppet5') || host_param_true?('enable-puppet6')
   puppet_enabled = pm_set || host_param_true?('force-puppet')
   use_sles_client_v2 = host_param_true?('use-sles-client-v2')
   salt_enabled = host_param('salt_master') ? true : false
