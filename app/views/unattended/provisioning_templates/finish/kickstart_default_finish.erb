@@ -42,10 +42,6 @@ echo 'root:<%= root_pass -%>' | /usr/sbin/chpasswd -e
 
 <%= snippet 'ntp' %>
 
-<% if rhel_compatible && !host_param_false?('enable-epel') -%>
-<%= snippet 'epel' -%>
-<% end -%>
-
 <%= snippet 'redhat_register' %>
 
 <% if host_enc['parameters']['realm'] && @host.realm && (@host.realm.realm_type == 'FreeIPA' || @host.realm.realm_type == 'Red Hat Identity Management') -%>

@@ -216,13 +216,9 @@ snippet: true
     <% end %>
   <% end %>
 
-  <% if install_disable_repo_plugin %>
-    if [ -f /usr/bin/dnf ]; then
-      dnf -y install yum-disable-repos-plugin
-    else
-      yum -t -y install yum-disable-repos-plugin
-    fi
-  <% end %>
+  <% if @host.operatingsystem.name == 'CentOS' -%>
+    find /etc/yum.repos.d -name "CentOS*.repo" -exec rm {} \; -exec touch {} \;
+  <% end -%>
 <% end %>
 
 <% if registration_type == 'spacewalk' %>
