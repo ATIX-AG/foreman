@@ -6,6 +6,7 @@ import NotificationContainer from '../../notifications';
 import NavDropdown from './NavDropdown';
 import NavItem from './NavItem';
 import ImpersonateIcon from './ImpersonateIcon';
+import InstanceTitleViewer from './InstanceTitleViewer';
 import { translate as __ } from '../../../common/I18n';
 
 const UserDropdowns = ({
@@ -15,6 +16,7 @@ const UserDropdowns = ({
   changeActiveMenu,
   notificationUrl,
   stopImpersonationUrl,
+  instanceTitle,
   ...props
 }) => {
   const userInfo = get(user, 'current_user.user');
@@ -23,6 +25,7 @@ const UserDropdowns = ({
   );
   return (
     <VerticalNav.IconBar {...props}>
+      <InstanceTitleViewer title={instanceTitle} />
       <NavItem
         className="drawer-pf-trigger dropdown notification-dropdown"
         id="notifications_container"
@@ -71,6 +74,7 @@ UserDropdowns.propTypes = {
   /** changeActiveMenu Func */
   changeActiveMenu: PropTypes.func,
   stopImpersonationUrl: PropTypes.string,
+  instanceTitle: PropTypes.string,
 };
 UserDropdowns.defaultProps = {
   className: '',
@@ -78,5 +82,6 @@ UserDropdowns.defaultProps = {
   notificationUrl: '',
   changeActiveMenu: null,
   stopImpersonationUrl: '',
+  instanceTitle: '',
 };
 export default UserDropdowns;
