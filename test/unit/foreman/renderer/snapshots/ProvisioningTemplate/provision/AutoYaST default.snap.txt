@@ -118,7 +118,6 @@ cp /etc/resolv.conf /mnt/etc
 
 
 
-
 if [ -x /usr/bin/curl ]; then
   /usr/bin/curl -o /dev/null -H 'Content-Type: text/plain' --noproxy \* --silent 'http://foreman.some.host.fqdn/unattended/built'
 elif [ -x /usr/bin/wget ]; then
@@ -126,7 +125,6 @@ elif [ -x /usr/bin/wget ]; then
 else
   wget -q -O /dev/null --header 'Content-Type: text/plain' 'http://foreman.some.host.fqdn/unattended/built'
 fi
-
 
 rm /etc/resolv.conf
 ]]>
