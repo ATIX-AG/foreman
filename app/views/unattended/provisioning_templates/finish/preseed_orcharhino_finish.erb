@@ -71,9 +71,5 @@ sed -i -e "/PermitRootLogin/d" /etc/ssh/sshd_config
 echo "PermitRootLogin Yes" >> /etc/ssh/sshd_config
 systemctl restart sshd
 
-<% if @host.respond_to?(:bootdisk_build?) && @host.bootdisk_build? -%>
-apt-get -y install eject
-eject -v
-<% end -%>
-
+<%= snippet 'eject_cdrom' -%>
 <%= snippet 'built' %>
