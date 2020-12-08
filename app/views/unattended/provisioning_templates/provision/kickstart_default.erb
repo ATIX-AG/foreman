@@ -320,9 +320,7 @@ The last post section halts Anaconda to prevent endless loop
 %post --erroronfail
 <% end -%>
 
-<% if @host.respond_to?(:bootdisk_build?) && @host.bootdisk_build? %>
-eject -v
-<% end -%>
+<%= snippet 'eject_cdrom' -%>
 
 if test -f /tmp/foreman_built; then
   echo "calling home: build is done!"

@@ -28,8 +28,5 @@ oses:
 <%= snippet 'saltstack_setup' %>
 <% end -%>
 
-<% if @host.respond_to?(:bootdisk_build?) && @host.bootdisk_build? -%>
-eject -v
-<% end -%>
-
+<%= snippet 'eject_cdrom' -%>
 <%= snippet 'built' %>
