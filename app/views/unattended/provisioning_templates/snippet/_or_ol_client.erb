@@ -11,7 +11,7 @@ description: This snippet prepares the registration to orcharhino on a OracleLin
   if !host_param('or_client_repo_url').nil?
     or_client_repo_url = host_param('or_client_repo_url')
   elsif !host_param('or_oraclelinux_client_repo_prefix').nil?
-    or_client_repo_url = host_param('or_oraclelinux_client_repo_prefix') + os_major
+    or_client_repo_url = host_param('or_oraclelinux_client_repo_prefix') + os_major.to_s
   else
     or_client_repo_url = nil
   end
