@@ -5,6 +5,8 @@ if ActiveRecord::Base.connection.migration_context.needs_migration?
   return
 end
 
+return if Object.const_defined?("Sidekiq::CLI")
+
 Foreman::Application.configure do |app|
   config.after_initialize do
     seeder = ForemanSeeder.new
