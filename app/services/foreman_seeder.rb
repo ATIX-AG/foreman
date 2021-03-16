@@ -2,6 +2,7 @@ require 'digest'
 
 class ForemanSeeder
   FOREMAN_INTERNAL_KEY = 'database_seed'.freeze
+  ADVISORY_LOCK = 0x7b5b5e3c0549a95c  # random Int64, should probably saved centrally
 
   attr_reader :seeds
 
@@ -38,7 +39,11 @@ class ForemanSeeder
   end
 
   def execute
-    raise "Seed already running!" if self.class.is_seeding
+    Rails.logger.info("Acquiring Advisory-Lock 0x#{ADVISORY_LOCK.to_s(16)} for seeding")
+    ActiveRecord::Base.connection.select_value("SELECT pg_advisory_lock(#{ADVISORY_LOCK})")
+
+    # if we had to wait for the look it is likely that the seeding has already been done
+    return unless hash_changed?
 
     self.class.is_seeding = true
     begin
@@ -61,6 +66,8 @@ class ForemanSeeder
     save_hash
 
     Rails.logger.info("All seed files executed") unless Rails.env.test?
+  ensure
+    ActiveRecord::Base.connection.select_value("SELECT pg_advisory_unlock(#{ADVISORY_LOCK})")
   end
 
   def save_hash
