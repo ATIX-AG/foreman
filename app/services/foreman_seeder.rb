@@ -38,8 +38,6 @@ class ForemanSeeder
   end
 
   def execute
-    raise "Seed already running!" if self.class.is_seeding
-
     self.class.is_seeding = true
     begin
       @seeds.each do |seed|
