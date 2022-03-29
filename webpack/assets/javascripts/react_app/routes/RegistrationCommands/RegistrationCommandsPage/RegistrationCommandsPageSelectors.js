@@ -38,6 +38,9 @@ export const selectConfigParams = state =>
 export const selectPluginData = state =>
   selectAPIResponse(state, REGISTRATION_COMMANDS_DATA).pluginData || {};
 
+export const selectHttpProxies = state =>
+  selectAPIResponse(state, REGISTRATION_COMMANDS_DATA).httpProxies || [];
+
 // Generate Command
 
 export const selectAPIStatusCommand = state =>

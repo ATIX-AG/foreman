@@ -6,6 +6,7 @@ import HostGroup from './fields/HostGroup';
 import OperatingSystem from './fields/OperatingSystem';
 import SmartProxy from './fields/SmartProxy';
 import Insecure from './fields/Insecure';
+import HttpProxy from './fields/HttpProxy';
 
 const General = ({
   organizationId,
@@ -27,7 +28,11 @@ const General = ({
   insecure,
   handleInsecure,
   handleInvalidField,
+  httpProxyId,
+  httpProxies,
+  handleHttpProxy,
   isLoading,
+  isDisabled,
 }) => (
   <>
     <Taxonomies
@@ -56,6 +61,7 @@ const General = ({
       operatingSystems={operatingSystems}
       operatingSystemTemplate={operatingSystemTemplate}
       isLoading={isLoading}
+      isDisabled={organizations.length != 0}
     />
 
     <SmartProxy
@@ -68,6 +74,13 @@ const General = ({
     <Insecure
       insecure={insecure}
       handleInsecure={handleInsecure}
+      isLoading={isLoading}
+    />
+
+    <HttpProxy
+      httpProxyId={httpProxyId}
+      httpProxies={httpProxies}
+      handleHttpProxy={handleHttpProxy}
       isLoading={isLoading}
     />
   </>
@@ -93,6 +106,8 @@ General.propTypes = {
   handleOperatingSystem: PropTypes.func.isRequired,
   smartProxyId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   handleSmartProxy: PropTypes.func.isRequired,
+  httpProxyId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  handleHttpProxy: PropTypes.func.isRequired,
   insecure: PropTypes.bool.isRequired,
   handleInsecure: PropTypes.func.isRequired,
   handleInvalidField: PropTypes.func.isRequired,
@@ -108,9 +123,11 @@ General.defaultProps = {
   locations: [],
   operatingSystems: [],
   smartProxies: [],
+  httpProxies: [],
   operatingSystemId: undefined,
   operatingSystemTemplate: undefined,
   smartProxyId: undefined,
+  httpProxyId: undefined,
 };
 
 export default General;

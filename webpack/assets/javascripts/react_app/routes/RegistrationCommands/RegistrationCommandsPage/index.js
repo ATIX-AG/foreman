@@ -35,6 +35,7 @@ import {
   selectOperatingSystems,
   selectOperatingSystemTemplate,
   selectSmartProxies,
+  selectHttpProxies,
   selectPluginData,
 } from './RegistrationCommandsPageSelectors';
 import { dataAction, commandAction } from './RegistrationCommandsPageActions';
@@ -72,6 +73,7 @@ const RegistrationCommandsPage = () => {
   const operatingSystems = useSelector(selectOperatingSystems);
   const operatingSystemTemplate = useSelector(selectOperatingSystemTemplate);
   const smartProxies = useSelector(selectSmartProxies);
+  const httpProxies = useSelector(selectHttpProxies);
   const configParams = useSelector(selectConfigParams);
   const pluginData = useSelector(selectPluginData);
 
@@ -81,6 +83,7 @@ const RegistrationCommandsPage = () => {
   const [hostGroupId, setHostGroupId] = useState();
   const [operatingSystemId, setOperatingSystemId] = useState();
   const [smartProxyId, setSmartProxyId] = useState();
+  const [httpProxyId, setHttpProxyId] = useState();
   const [insecure, setInsecure] = useState(false);
   const [setupRemoteExecution, setSetupRemoteExecution] = useState('');
   const [setupInsights, setSetupInsights] = useState('');
@@ -123,6 +126,7 @@ const RegistrationCommandsPage = () => {
       hostgroupId: hostGroupId,
       operatingsystemId: operatingSystemId,
       smartProxyId,
+      httpProxyId,
       insecure,
       setupRemoteExecution,
       setupInsights,
@@ -147,6 +151,7 @@ const RegistrationCommandsPage = () => {
     setHostGroupId();
     setOperatingSystemId();
     setSmartProxyId();
+    setHttpProxyId();
 
     dispatch(
       dataAction({ organization_id: organizationId, location_id: locationId })
@@ -251,6 +256,9 @@ const RegistrationCommandsPage = () => {
                   smartProxyId={smartProxyId}
                   smartProxies={smartProxies}
                   handleSmartProxy={setSmartProxyId}
+                  httpProxyId={httpProxyId}
+                  httpProxies={httpProxies}
+                  handleHttpProxy={setHttpProxyId}
                   insecure={insecure}
                   handleInsecure={setInsecure}
                   handleInvalidField={handleInvalidField}
