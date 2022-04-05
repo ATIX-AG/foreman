@@ -17,6 +17,9 @@ const HttpProxy = ({
   httpProxies,
   handleHttpProxy,
   isLoading,
+  isDisabled,
+  hostGroupId,
+  smartProxyId, 
 }) => (
   <FormGroup
     label={__('HTTP proxy')}
@@ -25,7 +28,7 @@ const HttpProxy = ({
       <LabelIcon
         text={__(
           'Only HTTP proxies with enabled `Templates` and `Registration` features are displayed.'
-        )}
+        ) }
       />
     }
   >
@@ -34,7 +37,7 @@ const HttpProxy = ({
       onChange={v => handleHttpProxy(v)}
       className="without_select2"
       id="reg_http_proxy"
-      isDisabled={isLoading || httpProxies.length === 0}
+      isDisabled={isLoading || httpProxies.length === 0 || (smartProxyId !== '' && smartProxyId !== undefined)}
     >
       {emptyOption(httpProxies.length)}
       {httpProxies.map((hp, i) => (
@@ -49,11 +52,14 @@ HttpProxy.propTypes = {
   handleHttpProxy: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
   httpProxies: PropTypes.array,
+  isDisabled: PropTypes.bool,
+  smartProxyId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
 HttpProxy.defaultProps = {
   httpProxyId: '',
   httpProxies: [],
+  isDisabled: false,
 };
 
 export default HttpProxy;

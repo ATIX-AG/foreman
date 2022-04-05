@@ -12,6 +12,7 @@ class RegistrationCommandsController < ApplicationController
       smartProxies: smart_proxies,
       configParams: host_config_params,
       pluginData: plugin_data,
+      httpProxies: http_proxies,
     }
   end
 
@@ -53,6 +54,10 @@ class RegistrationCommandsController < ApplicationController
 
   def smart_proxies
     SmartProxy.with_features('Templates') & SmartProxy.with_features('Registration')
+  end
+
+  def http_proxies
+    HttpProxy.all
   end
 
   # Extension point for plugins

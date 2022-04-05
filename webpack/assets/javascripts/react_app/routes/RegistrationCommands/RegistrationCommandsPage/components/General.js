@@ -61,7 +61,6 @@ const General = ({
       operatingSystems={operatingSystems}
       operatingSystemTemplate={operatingSystemTemplate}
       isLoading={isLoading}
-      isDisabled={organizations.length != 0}
     />
 
     <SmartProxy
@@ -69,6 +68,7 @@ const General = ({
       smartProxies={smartProxies}
       handleSmartProxy={handleSmartProxy}
       isLoading={isLoading}
+      httpProxyId={httpProxyId}
     />
 
     <Insecure
@@ -82,6 +82,7 @@ const General = ({
       httpProxies={httpProxies}
       handleHttpProxy={handleHttpProxy}
       isLoading={isLoading}
+      smartProxyId={smartProxyId}
     />
   </>
 );

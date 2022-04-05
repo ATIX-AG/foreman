@@ -17,6 +17,7 @@ const SmartProxy = ({
   smartProxies,
   handleSmartProxy,
   isLoading,
+  httpProxyId,
 }) => (
   <FormGroup
     label={__('Smart proxy')}
@@ -34,7 +35,7 @@ const SmartProxy = ({
       onChange={v => handleSmartProxy(v)}
       className="without_select2"
       id="reg_smart_proxy"
-      isDisabled={isLoading || smartProxies.length === 0}
+      isDisabled={isLoading || smartProxies.length === 0 || (httpProxyId !== '' && httpProxyId !== undefined)}
     >
       {emptyOption(smartProxies.length)}
       {smartProxies.map((sp, i) => (
@@ -49,6 +50,7 @@ SmartProxy.propTypes = {
   handleSmartProxy: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
   smartProxies: PropTypes.array,
+  httpProxyId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
 SmartProxy.defaultProps = {
