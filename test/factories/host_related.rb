@@ -358,6 +358,11 @@ FactoryBot.define do
         operatingsystem { FactoryBot.build(:for_snapshots_ubuntu_20) }
       end
 
+      factory :host_for_snapshots_ipv4_dhcp_ubuntu22 do
+        ptable { FactoryBot.build(:ptable, :ubuntu_autoinstall) }
+        operatingsystem { FactoryBot.build(:for_snapshots_ubuntu_22) }
+      end
+
       factory :host_for_snapshots_ipv4_dhcp_rhel9 do
         operatingsystem { FactoryBot.build(:for_snapshots_rhel9) }
       end

@@ -220,6 +220,19 @@ FactoryBot.define do
       ptables { [FactoryBot.build(:ptable, name: 'ptable')] }
     end
 
+    # post-netinstall release
+    factory :for_snapshots_ubuntu_22, class: Debian do
+      name { 'Ubuntu' }
+      major { '22.04' }
+      minor { '' }
+      type { 'Debian' }
+      release_name { 'jammy' }
+      title { 'Ubuntu Jammy' }
+      architectures { [FactoryBot.build(:architecture, :for_snapshots_x86_64)] }
+      media { [FactoryBot.build(:ubuntu_for_snapshots)] }
+      ptables { [FactoryBot.build(:ptable, name: 'ptable')] }
+    end
+
     factory :for_snapshots_rhel9, class: Redhat do
       name { 'RHEL' }
       major { '9' }
