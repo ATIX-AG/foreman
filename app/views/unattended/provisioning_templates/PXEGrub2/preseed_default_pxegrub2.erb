@@ -33,4 +33,22 @@ menuentry '<%= template_name %>' {
   initrd<%= efi_suffix %> <%= @initrd %>
 }
 
+<%
+subnet = @host.provision_interface.subnet || @host.provision_interface.subnet6
+if subnet && subnet.httpboot
+  proxy_http_port = subnet.httpboot.httpboot_http_port
+  # Workaround for "no DNS server configured" https://bugzilla.redhat.com/show_bug.cgi?id=1842509
+  proxy_host = dns_lookup(subnet.httpboot.hostname)
+-%>
+<% if proxy_http_port -%>
+menuentry '<%= template_name %> EFI HTTP' --id efi_http {
+  linux<%= efi_suffix %>  (http,<%= proxy_host %>:<%= proxy_http_port %>)/httpboot/<%= @kernel %> interface=auto url=<%= foreman_url('provision')%> ramdisk_size=10800 root=/dev/rd/0 rw auto <%= snippet("preseed_kernel_options").strip %>
+  initrd<%= efi_suffix %> (http,<%= proxy_host %>:<%= proxy_http_port %>)/httpboot/<%= @initrd %>
+}
+<% else -%>
+# Smart proxy does not have HTTPBoot feature with HTTP port enabled, skipping EFI HTTP boot menu entry
+<% end -%>
+
+<% end %>
+
 <%= snippet_if_exists(template_name + " custom menu") %>
